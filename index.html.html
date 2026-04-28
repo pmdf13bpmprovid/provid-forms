@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1a2744">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PROVID">
+<title>PROVID — Formulários Digitais</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root {
+  --navy: #1a2744;
+  --navy-light: #243460;
+  --gold: #c8a84b;
+  --gold-light: #e8c96e;
+  --white: #f8f7f4;
+  --gray: #9ca3af;
+  --gray-light: #f1f0ec;
+  --red-soft: #e05252;
+  --green-soft: #3aaa7a;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 4px 24px rgba(26,39,68,0.18);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: 'Barlow', sans-serif;
+  background: var(--navy);
+  color: var(--white);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── TELAS ── */
+.screen { display: none; flex-direction: column; min-height: 100vh; }
+.screen.active { display: flex; }
+
+/* ── HOME ── */
+#screen-home {
+  background: linear-gradient(160deg, #1a2744 60%, #243460 100%);
+  padding: 0;
+}
+.home-header {
+  padding: 52px 28px 28px;
+  border-bottom: 1px solid rgba(200,168,75,0.2);
+}
+.home-logo {
+  display: flex; align-items: center; gap: 14px; margin-bottom: 20px;
+}
+.home-logo-badge {
+  width: 48px; height: 48px;
+  background: var(--gold);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 20px; font-weight: 700;
+  color: var(--navy);
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+.home-logo-text { line-height: 1.2; }
+.home-logo-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 22px; font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--white);
+}
+.home-logo-sub {
+  font-size: 11px; color: var(--gold);
+  letter-spacing: 0.5px; text-transform: uppercase;
+}
+.home-tagline {
+  font-size: 13px; color: rgba(248,247,244,0.55);
+  line-height: 1.5;
+}
+.home-body { padding: 24px 20px 40px; flex: 1; }
+.home-section-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 12px; padding-left: 4px;
+}
+.form-grid { display: flex; flex-direction: column; gap: 8px; margin-bottom: 28px; }
+
+.form-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  display: flex; align-items: center; gap: 14px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+  -webkit-user-select: none;
+}
+.form-card:active { transform: scale(0.98); background: rgba(255,255,255,0.1); }
+.form-card-num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px; font-weight: 700;
+  color: var(--gold);
+  min-width: 28px;
+  letter-spacing: 0.5px;
+}
+.form-card-info { flex: 1; }
+.form-card-name {
+  font-size: 14px; font-weight: 600;
+  color: var(--white); line-height: 1.3;
+}
+.form-card-meta {
+  font-size: 11px; color: rgba(248,247,244,0.45);
+  margin-top: 2px;
+}
+.form-card-arrow {
+  font-size: 16px; color: rgba(248,247,244,0.3);
+}
+.badge-sign {
+  font-size: 10px; font-weight: 600;
+  background: rgba(200,168,75,0.2);
+  color: var(--gold-light);
+  border: 1px solid rgba(200,168,75,0.3);
+  border-radius: 20px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+/* ── FORMULÁRIO ── */
+#screen-form {
+  background: var(--gray-light);
+  color: #1a1a1a;
+}
+.form-topbar {
+  background: var(--navy);
+  padding: 52px 20px 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.btn-back {
+  background: rgba(255,255,255,0.1);
+  border: none; border-radius: 8px;
+  color: var(--white); font-size: 18px;
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0;
+}
+.form-topbar-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px; font-weight: 700;
+  color: var(--white); line-height: 1.2; flex: 1;
+}
+.form-topbar-num {
+  font-size: 12px; font-weight: 600;
+  color: var(--gold); letter-spacing: 1px;
+}
+.form-body { flex: 1; padding: 20px 16px 40px; overflow-y: auto; }
+.form-section {
+  background: white;
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+}
+.form-section-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--navy); margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--gold);
+}
+.field-group { margin-bottom: 14px; }
+.field-group:last-child { margin-bottom: 0; }
+.field-label {
+  font-size: 12px; font-weight: 600;
+  color: #4b5563; margin-bottom: 5px; display: block;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.field-input, .field-textarea, .field-select {
+  width: 100%;
+  border: 1.5px solid #e5e7eb;
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 15px;
+  color: #1a1a1a;
+  background: white;
+  transition: border-color 0.15s;
+  -webkit-appearance: none;
+}
+.field-input:focus, .field-textarea:focus, .field-select:focus {
+  outline: none; border-color: var(--navy);
+}
+.field-textarea { resize: none; min-height: 80px; }
+.field-row { display: flex; gap: 10px; }
+.field-row .field-group { flex: 1; }
+
+/* Checkboxes */
+.check-group { display: flex; flex-direction: column; gap: 8px; }
+.check-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.check-item.selected { border-color: var(--navy); background: rgba(26,39,68,0.05); }
+.check-item input { display: none; }
+.check-box {
+  width: 18px; height: 18px; border-radius: 4px;
+  border: 2px solid #d1d5db;
+  background: white; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.check-item.selected .check-box {
+  background: var(--navy); border-color: var(--navy);
+}
+.check-box::after {
+  content: '✓'; color: white; font-size: 11px; font-weight: 700; display: none;
+}
+.check-item.selected .check-box::after { display: block; }
+.check-label { font-size: 14px; color: #374151; }
+
+/* Radio */
+.radio-group { display: flex; gap: 8px; flex-wrap: wrap; }
+.radio-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-size: 14px; color: #374151;
+}
+.radio-item.selected { border-color: var(--navy); background: var(--navy); color: white; }
+.radio-item input { display: none; }
+
+/* Assinatura */
+.sig-container {
+  border: 2px dashed #d1d5db;
+  border-radius: var(--radius);
+  overflow: hidden; background: #fafafa;
+  margin-top: 8px; position: relative;
+}
+.sig-canvas { display: block; width: 100%; touch-action: none; }
+.sig-clear {
+  position: absolute; top: 8px; right: 8px;
+  background: rgba(0,0,0,0.06);
+  border: none; border-radius: 6px;
+  padding: 4px 10px; font-size: 12px; color: #6b7280;
+  cursor: pointer;
+}
+.sig-hint {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+  font-size: 13px; color: #9ca3af;
+  gap: 6px;
+}
+.sig-hint.hidden { display: none; }
+
+/* Bottom actions */
+.form-actions {
+  padding: 16px;
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  display: flex; gap: 10px;
+}
+.btn-primary {
+  flex: 1;
+  background: var(--navy);
+  color: white;
+  border: none; border-radius: var(--radius-sm);
+  padding: 14px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 15px; font-weight: 700;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: opacity 0.15s, transform 0.1s;
+  letter-spacing: 0.3px;
+}
+.btn-primary:active { transform: scale(0.98); opacity: 0.9; }
+.btn-secondary {
+  background: var(--gray-light);
+  color: var(--navy);
+  border: 1.5px solid #e5e7eb; border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 14px; font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+/* ── PDF PREVIEW ── */
+#screen-pdf {
+  background: var(--gray-light);
+  color: #1a1a1a;
+}
+.pdf-topbar {
+  background: var(--navy);
+  padding: 52px 20px 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.pdf-actions {
+  padding: 16px;
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  display: flex; gap: 10px;
+}
+.btn-download {
+  flex: 1;
+  background: var(--gold);
+  color: var(--navy);
+  border: none; border-radius: var(--radius-sm);
+  padding: 14px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 15px; font-weight: 700;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: opacity 0.15s;
+}
+.pdf-preview-body {
+  flex: 1; padding: 20px 16px; overflow-y: auto;
+}
+.pdf-card {
+  background: white; border-radius: var(--radius);
+  padding: 20px; box-shadow: var(--shadow);
+}
+.pdf-card-header {
+  text-align: center;
+  border-bottom: 2px solid var(--navy);
+  padding-bottom: 14px; margin-bottom: 16px;
+}
+.pdf-card-org {
+  font-size: 11px; color: #4b5563; line-height: 1.8;
+}
+.pdf-card-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 20px; font-weight: 700;
+  color: var(--navy); margin-top: 8px;
+  text-transform: uppercase; letter-spacing: 1px;
+}
+.pdf-field { margin-bottom: 12px; }
+.pdf-field-label {
+  font-size: 10px; font-weight: 700;
+  color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.pdf-field-value {
+  font-size: 14px; color: #1a1a1a;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 4px; margin-top: 2px;
+  min-height: 22px;
+}
+.pdf-sig-img { max-width: 200px; border-bottom: 1px solid #1a1a1a; display: block; }
+.pdf-check-list { display: flex; flex-direction: column; gap: 3px; }
+.pdf-check-item { font-size: 13px; color: #374151; }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+  background: #1a1a1a; color: white;
+  padding: 12px 20px; border-radius: 8px;
+  font-size: 14px; font-weight: 500;
+  z-index: 9999; transition: transform 0.3s;
+  white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════ HOME ══════════════════════════════════════ -->
+<div id="screen-home" class="screen active">
+  <div class="home-header">
+    <div class="home-logo">
+      <div class="home-logo-badge">PV</div>
+      <div class="home-logo-text">
+        <div class="home-logo-title">PROVID</div>
+        <div class="home-logo-sub">PMDF · Formulários Digitais</div>
+      </div>
+    </div>
+    <div class="home-tagline">Preencha, assine e gere o PDF — sem papel, sem internet obrigatória.</div>
+  </div>
+
+  <div class="home-body">
+    <div class="home-section-label">Formulários de campo — com assinatura</div>
+    <div class="form-grid">
+      <div class="form-card" onclick="openForm('f2')">
+        <div class="form-card-num">F2</div>
+        <div class="form-card-info">
+          <div class="form-card-name">Termo de Inserção da Vítima</div>
+          <div class="form-card-meta">Assinatura da vítima + policial</div>
+        </div>
+        <span class="badge-sign">✍ assina</span>
+      </div>
+      <div class="form-card" onclick="openForm('f3')">
+        <div class="form-card-num">F3</div>
+        <div class="form-card-info">
+          <div class="form-card-name">Termo de Recusa de Inclusão</div>
+          <div class="form-card-meta">Assinatura da vítima + comandante</div>
+        </div>
+        <span class="badge-sign">✍ assina</span>
+      </div>
+      <div class="form-card" onclick="openForm('f5')">
+        <div class="form-card-num">F5</div>
+        <div class="form-card-info">
+          <div class="form-card-name">Autorização de Ingresso em Domicílio</div>
+          <div class="form-card-meta">Assinatura da vítima + equipe</div>
+        </div>
+        <span class="badge-sign">✍ assina</span>
+      </div>
+      <div class="form-card" onclick="openForm('f7')">
+        <div class="form-card-num">F7</div>
+        <div class="form-card-info">
+          <div class="form-card-name">Notificação Formal do Autor</div>
+          <div class="form-card-meta">Assinatura do autor + comandante</div>
+        </div>
+        <span class="badge-sign">✍ assina</span>
+      </div>
+      <div class="form-card" onclick="openForm('f9')">
+        <div class="form-card-num">F9</div>
+        <div class="form-card-info">
+          <div class="form-card-name">Desligamento por Solicitação da Vítima</div>
+          <div class="form-card-meta">Assinatura da vítima + comandante</div>
+        </div>
+        <span class="badge-sign">✍ assina</span>
+      </div>
+      <div class="form-card" onclick="openForm('f10')">
+        <div class="form-card-num">F10</div>
+        <div class="form-card-info">
+          <div class="form-card-name">Desligamento pelo PROVID</div>
+          <div class="form-card-meta">Assinatura da vítima + comandante</div>
+        </div>
+        <span class="badge-sign">✍ assina</span>
+      </div>
+    </div>
+
+    <div class="home-section-label">Formulários de campo — preenchimento da equipe</div>
+    <div class="form-grid">
+      <div class="form-card" onclick="openForm('f4')">
+        <div class="form-card-num">F4</div>
+        <div class="form-card-info">
+          <div class="form-card-name">Avaliação de Risco</div>
+          <div class="form-card-meta">Preenchido pela equipe</div>
+        </div>
+        <div class="form-card-arrow">›</div>
+      </div>
+      <div class="form-card" onclick="openForm('f6')">
+        <div class="form-card-num">F6</div>
+        <div class="form-card-info">
+          <div class="form-card-name">Atendimento à Vítima Militar</div>
+          <div class="form-card-meta">Preenchido pela equipe</div>
+        </div>
+        <div class="form-card-arrow">›</div>
+      </div>
+      <div class="form-card" onclick="openForm('f8')">
+        <div class="form-card-num">F8</div>
+        <div class="form-card-info">
+          <div class="form-card-name">Atendimento ao Autor Militar</div>
+          <div class="form-card-meta">Preenchido pela equipe</div>
+        </div>
+        <div class="form-card-arrow">›</div>
+      </div>
+      <div class="form-card" onclick="openForm('f11')">
+        <div class="form-card-num">F11</div>
+        <div class="form-card-info">
+          <div class="form-card-name">Cadastro de PM Interessado</div>
+          <div class="form-card-meta">Preenchido pelo PM candidato</div>
+        </div>
+        <div class="form-card-arrow">›</div>
+      </div>
+      <div class="form-card" onclick="openForm('f15')">
+        <div class="form-card-num">F15</div>
+        <div class="form-card-info">
+          <div class="form-card-name">Plano de Segurança Individualizado</div>
+          <div class="form-card-meta">Preenchido pela equipe</div>
+        </div>
+        <div class="form-card-arrow">›</div>
+      </div>
+      <div class="form-card" onclick="openForm('f16')">
+        <div class="form-card-num">F16</div>
+        <div class="form-card-info">
+          <div class="form-card-name">Documento Informativo do Ofensor</div>
+          <div class="form-card-meta">Preenchido pela equipe</div>
+        </div>
+        <div class="form-card-arrow">›</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ FORMULÁRIO ══════════════════════════════════════ -->
+<div id="screen-form" class="screen">
+  <div class="form-topbar">
+    <button class="btn-back" onclick="goHome()">‹</button>
+    <div style="flex:1">
+      <div id="form-topbar-num" class="form-topbar-num"></div>
+      <div id="form-topbar-title" class="form-topbar-title"></div>
+    </div>
+  </div>
+
+  <div class="form-body" id="form-body">
+    <!-- dinâmico -->
+  </div>
+
+  <div class="form-actions">
+    <button class="btn-secondary" onclick="goHome()">Cancelar</button>
+    <button class="btn-primary" onclick="generatePDF()">
+      <span>📄</span> Gerar PDF
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ PDF PREVIEW ══════════════════════════════════════ -->
+<div id="screen-pdf" class="screen">
+  <div class="pdf-topbar">
+    <button class="btn-back" onclick="showScreen('form')">‹</button>
+    <div style="flex:1">
+      <div class="form-topbar-num">DOCUMENTO GERADO</div>
+      <div class="form-topbar-title" id="pdf-title">Pré-visualização</div>
+    </div>
+  </div>
+
+  <div class="pdf-preview-body">
+    <div class="pdf-card">
+      <div class="pdf-card-header">
+        <div class="pdf-card-org">
+          Governo do Distrito Federal · Polícia Militar do Distrito Federal<br>
+          Centro de Políticas de Segurança Pública<br>
+          Seção de Prevenção Orientada à Violência Doméstica e Familiar
+        </div>
+        <div class="pdf-card-title" id="pdf-doc-title"></div>
+      </div>
+      <div id="pdf-content"></div>
+    </div>
+    <div style="height:20px"></div>
+  </div>
+
+  <div class="pdf-actions">
+    <button class="btn-secondary" onclick="showScreen('form')">Editar</button>
+    <button class="btn-download" onclick="downloadPDF()">
+      <span>⬇</span> Salvar PDF
+    </button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════
+let currentForm = null;
+let formData = {};
+let signatureCanvases = {};
+
+const FORMS = {
+  f2: {
+    title: 'Termo de Inserção da Vítima no PROVID',
+    num: 'F2',
+    hasSig: true,
+    sigLabels: ['Assinatura da vítima', 'Policial Militar Referência'],
+    fields: [
+      { section: 'Dados da Visita', items: [
+        { id: 'local', label: 'Local', type: 'text', placeholder: 'Cidade, RA' },
+        { id: 'data', label: 'Data', type: 'date' },
+      ]},
+      { section: 'Identificação da Vítima', items: [
+        { id: 'nome', label: 'Nome completo', type: 'text' },
+        { id: 'rg', label: 'RG', type: 'text' },
+        { id: 'cpf', label: 'CPF', type: 'text', placeholder: '000.000.000-00' },
+        { id: 'mae', label: 'Nome da mãe', type: 'text' },
+        { id: 'naturalidade', label: 'Naturalidade', type: 'text' },
+        { id: 'estado_civil', label: 'Estado civil', type: 'text' },
+        { id: 'genero', label: 'Gênero com o qual se identifica', type: 'text' },
+        { id: 'cor', label: 'Cor/Raça', type: 'text' },
+        { id: 'endereco', label: 'Endereço completo', type: 'text' },
+        { id: 'telefone', label: 'Telefone', type: 'tel' },
+      ]},
+      { section: 'Vulnerabilidades Adicionais', items: [
+        { id: 'vulnerabilidades', label: 'Marque as que se aplicam', type: 'multicheck', options: ['Deficiência', 'Migrante', 'LGBTQIA+', 'Idosa', 'Outra'] },
+        { id: 'vuln_outra', label: 'Outra (especifique)', type: 'text' },
+      ]},
+      { section: 'Policial Responsável', items: [
+        { id: 'policial_nome', label: 'Nome e matrícula do policial referência', type: 'text' },
+        { id: 'rap', label: 'Nº do RAP/BO', type: 'text' },
+      ]},
+    ]
+  },
+
+  f3: {
+    title: 'Termo de Recusa de Inclusão no PROVID',
+    num: 'F3',
+    hasSig: true,
+    sigLabels: ['Assinatura da vítima', 'Comandante da Equipe PROVID'],
+    fields: [
+      { section: 'Identificação', items: [
+        { id: 'local', label: 'Local e data', type: 'text', placeholder: 'Local, dia/mês/ano' },
+        { id: 'nome', label: 'Nome completo da vítima', type: 'text' },
+        { id: 'rg', label: 'RG', type: 'text' },
+        { id: 'cpf', label: 'CPF', type: 'text' },
+        { id: 'rap', label: 'Nº RAP/BO', type: 'text' },
+      ]},
+      { section: 'Equipe PROVID', items: [
+        { id: 'pm1_pg', label: 'P/G + Nome + Matrícula (PM 1)', type: 'text' },
+        { id: 'pm2_pg', label: 'P/G + Nome + Matrícula (PM 2)', type: 'text' },
+        { id: 'cmdt_nome', label: 'Nome completo do Comandante', type: 'text' },
+        { id: 'cmdt_posto', label: 'Posto/Graduação do Comandante', type: 'text' },
+      ]},
+    ]
+  },
+
+  f5: {
+    title: 'Autorização de Ingresso em Domicílio para Visita Solidária',
+    num: 'F5',
+    hasSig: true,
+    sigLabels: ['Assinatura da vítima (autorizante)', 'Comandante da Equipe PROVID'],
+    fields: [
+      { section: 'Dados da Autorizante', items: [
+        { id: 'nome', label: 'Nome completo', type: 'text' },
+        { id: 'pai', label: 'Filho(a) de (pai)', type: 'text' },
+        { id: 'mae', label: 'E de (mãe)', type: 'text' },
+        { id: 'nascimento', label: 'Data de nascimento', type: 'date' },
+        { id: 'rg', label: 'RG', type: 'text' },
+        { id: 'cpf', label: 'CPF', type: 'text' },
+      ]},
+      { section: 'Endereço', items: [
+        { id: 'endereco', label: 'Logradouro', type: 'text' },
+        { id: 'numero', label: 'Número', type: 'text' },
+        { id: 'complemento', label: 'Complemento', type: 'text' },
+        { id: 'bairro', label: 'Bairro', type: 'text' },
+        { id: 'cidade', label: 'Cidade', type: 'text' },
+      ]},
+      { section: 'Equipe Autorizada', items: [
+        { id: 'cmdt', label: 'Nome do Comandante da Equipe', type: 'text' },
+        { id: 'prefixo', label: 'Prefixo nº', type: 'text' },
+        { id: 'unidade', label: 'Unidade lotada', type: 'text' },
+        { id: 'pm1', label: 'P/G + Matrícula + Nome (PM 1)', type: 'text' },
+        { id: 'pm2', label: 'P/G + Matrícula + Nome (PM 2)', type: 'text' },
+      ]},
+    ]
+  },
+
+  f7: {
+    title: 'Notificação Formal do Autor',
+    num: 'F7',
+    hasSig: true,
+    sigLabels: ['Assinatura do(a) notificado(a)', 'Nome completo e RG do notificado(a)'],
+    fields: [
+      { section: 'Dados da Notificação', items: [
+        { id: 'local', label: 'Local', type: 'text' },
+        { id: 'data', label: 'Data', type: 'date' },
+        { id: 'nome_autor', label: 'Nome do(a) autor(a)', type: 'text' },
+        { id: 'rg_autor', label: 'RG', type: 'text' },
+        { id: 'cpf_autor', label: 'CPF', type: 'text' },
+        { id: 'num_bos', label: 'Nº de boletins de ocorrência vinculados', type: 'text' },
+      ]},
+      { section: 'Responsável', items: [
+        { id: 'cmdt_nome', label: 'Nome completo do Comandante', type: 'text' },
+        { id: 'cmdt_posto', label: 'Posto/Graduação', type: 'text' },
+        { id: 'rg_notif', label: 'RG do notificado (legível)', type: 'text' },
+      ]},
+    ]
+  },
+
+  f9: {
+    title: 'Desligamento por Solicitação da Vítima',
+    num: 'F9',
+    hasSig: true,
+    sigLabels: ['Assinatura da vítima', 'Comandante da Equipe PROVID'],
+    fields: [
+      { section: 'Identificação', items: [
+        { id: 'nome', label: 'Nome completo da vítima', type: 'text' },
+        { id: 'rg', label: 'RG', type: 'text' },
+        { id: 'cpf', label: 'CPF', type: 'text' },
+        { id: 'rap', label: 'Nº RAP/BO', type: 'text' },
+        { id: 'motivo', label: 'Motivo informado pela vítima', type: 'textarea', placeholder: 'Descreva o motivo relatado pela vítima para o desligamento...' },
+      ]},
+      { section: 'Equipe PROVID', items: [
+        { id: 'cmdt_nome', label: 'Nome completo do Comandante', type: 'text' },
+        { id: 'cmdt_posto', label: 'Posto/Graduação', type: 'text' },
+      ]},
+    ]
+  },
+
+  f10: {
+    title: 'Desligamento da Vítima pelo PROVID',
+    num: 'F10',
+    hasSig: true,
+    sigLabels: ['Assinatura da vítima', 'Comandante da Equipe PROVID'],
+    fields: [
+      { section: 'Identificação', items: [
+        { id: 'nome', label: 'Nome completo da vítima', type: 'text' },
+        { id: 'rg', label: 'RG', type: 'text' },
+        { id: 'cpf', label: 'CPF', type: 'text' },
+        { id: 'rap', label: 'Nº RAP/BO', type: 'text' },
+        { id: 'local_data', label: 'Local e data', type: 'text', placeholder: 'Local, dia de mês de ano' },
+        { id: 'motivo', label: 'Orientações não cumpridas (detalhar)', type: 'textarea', placeholder: 'Descreva quais orientações do plano de segurança a vítima não seguiu...' },
+      ]},
+      { section: 'Equipe', items: [
+        { id: 'pm1', label: 'Nome de Guerra/Matrícula (PM 1)', type: 'text' },
+        { id: 'pm2', label: 'Nome de Guerra/Matrícula (PM 2)', type: 'text' },
+        { id: 'cmdt', label: 'Nome e posto do Comandante', type: 'text' },
+      ]},
+    ]
+  },
+
+  f4: {
+    title: 'Formulário de Avaliação de Risco',
+    num: 'F4',
+    hasSig: false,
+    fields: [
+      { section: 'Identificação das Partes', items: [
+        { id: 'vitima_nome', label: 'Nome da vítima', type: 'text' },
+        { id: 'vitima_idade', label: 'Idade', type: 'text' },
+        { id: 'vitima_esc', label: 'Escolaridade', type: 'text' },
+        { id: 'vitima_nac', label: 'Nacionalidade', type: 'text' },
+        { id: 'agressor_nome', label: 'Nome do(a) agressor(a)', type: 'text' },
+        { id: 'agressor_idade', label: 'Idade', type: 'text' },
+        { id: 'agressor_esc', label: 'Escolaridade', type: 'text' },
+        { id: 'vinculo', label: 'Vínculo entre vítima e agressor(a)', type: 'text' },
+        { id: 'data', label: 'Data', type: 'date' },
+      ]},
+      { section: 'Bloco I — Histórico de Violência', items: [
+        { id: 'ameaca', label: 'O(a) agressor(a) já ameaçou com...', type: 'multicheck', options: ['Arma de fogo', 'Faca', 'Outra forma', 'Não'] },
+        { id: 'agressao_grave', label: 'Agressões físicas graves', type: 'multicheck', options: ['Queimadura', 'Afogamento', 'Enforcamento', 'Facada', 'Sufocamento', 'Paulada', 'Tiro', 'Nenhuma'] },
+        { id: 'agressao_leve', label: 'Outras agressões físicas', type: 'multicheck', options: ['Socos', 'Empurrões', 'Chutes', 'Puxões de cabelo', 'Tapas', 'Nenhuma'] },
+        { id: 'violencia_sexual', label: 'Violência sexual (obrigou a atos contra a vontade)?', type: 'radio', options: ['Sim', 'Não'] },
+        { id: 'comportamentos', label: 'Comportamentos de controle', type: 'multicheck', options: ['"Se não for minha, não será de mais ninguém"', 'Perseguiu ou vigiou', 'Proibiu visitar familiares/amigos', 'Proibiu de trabalhar/estudar', 'Ligações e mensagens insistentes'] },
+      ]},
+      { section: 'Nível de Risco', items: [
+        { id: 'nivel_risco', label: 'Nível de risco identificado', type: 'radio', options: ['Baixo', 'Médio', 'Alto', 'Altíssimo'] },
+        { id: 'obs', label: 'Observações gerais', type: 'textarea' },
+      ]},
+    ]
+  },
+
+  f6: {
+    title: 'Atendimento à Vítima Militar',
+    num: 'F6',
+    hasSig: false,
+    fields: [
+      { section: 'Identificação', items: [
+        { id: 'data', label: 'Data', type: 'date' },
+        { id: 'unidade', label: 'Unidade', type: 'text' },
+        { id: 'nome', label: 'Nome', type: 'text' },
+        { id: 'posto', label: 'Posto/Graduação', type: 'text' },
+        { id: 'situacao', label: 'Situação funcional', type: 'radio', options: ['Ativo', 'Inativo'] },
+        { id: 'tempo_servico', label: 'Tempo de serviço', type: 'text' },
+        { id: 'idade', label: 'Idade', type: 'text' },
+        { id: 'sexo', label: 'Sexo', type: 'text' },
+        { id: 'rap', label: 'Nº BO/RAP', type: 'text' },
+      ]},
+      { section: 'Situação', items: [
+        { id: 'outros_bos', label: 'Envolvida em outros BOs como vítima de VD?', type: 'radio', options: ['Sim', 'Não'] },
+        { id: 'autor_pm', label: 'O autor é PM?', type: 'radio', options: ['Sim', 'Não'] },
+        { id: 'autor_dados', label: 'Dados do autor PM (mat., posto, unidade, nome)', type: 'text' },
+        { id: 'medidas', label: 'Pediu medidas protetivas?', type: 'radio', options: ['Sim', 'Não'] },
+        { id: 'provid', label: 'Família acompanhada pelo PROVID?', type: 'radio', options: ['Sim', 'Não'] },
+        { id: 'caps', label: 'Acompanhada pelo CAPS?', type: 'radio', options: ['Sim', 'Não'] },
+        { id: 'psicologo', label: 'Em tratamento psicológico?', type: 'radio', options: ['Sim', 'Não'] },
+        { id: 'psiquiatra', label: 'Em tratamento psiquiátrico?', type: 'radio', options: ['Sim', 'Não'] },
+        { id: 'alcool', label: 'Relato de uso abusivo de álcool?', type: 'radio', options: ['Sim', 'Não'] },
+        { id: 'drogas', label: 'Relato de uso de drogas?', type: 'radio', options: ['Sim', 'Não'] },
+        { id: 'drogas_esp', label: 'Especificar drogas', type: 'text' },
+        { id: 'financeiro', label: 'Problemas financeiros?', type: 'radio', options: ['Sim', 'Não'] },
+        { id: 'estado_civil', label: 'Estado civil', type: 'text' },
+        { id: 'filhos', label: 'Quantos filhos?', type: 'text' },
+        { id: 'pensao', label: 'Recebe pensão alimentícia?', type: 'radio', options: ['Sim', 'Não'] },
+        { id: 'pressao', label: 'Sofre muita pressão psicológica no trabalho?', type: 'radio', options: ['Sim', 'Não'] },
+        { id: 'suicidio', label: 'Relato de tentativa de autoextermínio?', type: 'radio', options: ['Sim', 'Não'] },
+        { id: 'depressao', label: 'Relato de depressão?', type: 'radio', options: ['Sim', 'Não'] },
+      ]},
+    ]
+  },
+
+  f8: {
+    title: 'Atendimento ao Autor Militar',
+    num: 'F8',
+    hasSig: false,
+    fields: [
+      { section: 'Identificação', items: [
+        { id: 'data', label: 'Data', type: 'date' },
+        { id: 'unidade', label: 'Unidade', type: 'text' },
+        { id: 'nome', label: 'Nome', type: 'text' },
+        { id: 'posto', label: 'Posto/Graduação', type: 'text' },
+        { id: 'situacao', label: 'Situação funcional', type: 'radio', options: ['Ativo', 'Inativo'] },
+        { id: 'tempo_servico', label: 'Tempo de serviço', type: 'text' },
+        { id: 'idade', label: 'Idade', type: 'text' },
+        { id: 'sexo', label: 'Sexo', type: 'text' },
+        { id: 'rap', label: 'Nº BO/RAP', type: 'text' },
+      ]},
+      { section: 'Situação', items: [
+        { id: 'outros_bos', label: 'Envolvido em outros BOs por VD?', type: 'radio', options: ['Sim', 'Não'] },
+        { id: 'medidas', label: 'Cumpre medidas protetivas?', type: 'radio', options: ['Sim', 'Não'] },
+        { id: 'provid', label: 'Família acompanhada pelo PROVID?', type: 'radio', options: ['Sim', 'Não'] },
+        { id: 'caps', label: 'Acompanhado pelo CAPS?', type: 'radio', options: ['Sim', 'Não'] },
+        { id: 'psicologo', label: 'Em tratamento psicológico?', type: 'radio', options: ['Sim', 'Não'] },
+        { id: 'psiquiatra', label: 'Em tratamento psiquiátrico?', type: 'radio', options: ['Sim', 'Não'] },
+        { id: 'alcool', label: 'Relato de uso abusivo de álcool?', type: 'radio', options: ['Sim', 'Não'] },
+        { id: 'drogas', label: 'Relato de uso de drogas?', type: 'radio', options: ['Sim', 'Não'] },
+        { id: 'drogas_esp', label: 'Especificar', type: 'text' },
+        { id: 'financeiro', label: 'Problemas financeiros?', type: 'radio', options: ['Sim', 'Não'] },
+        { id: 'estado_civil', label: 'Estado civil', type: 'text' },
+        { id: 'filhos', label: 'Quantos filhos?', type: 'text' },
+        { id: 'pensao', label: 'Relato de pensão alimentícia?', type: 'radio', options: ['Sim', 'Não'] },
+        { id: 'pressao', label: 'Pressão psicológica no trabalho?', type: 'radio', options: ['Sim', 'Não'] },
+        { id: 'suicidio', label: 'Tentativa de autoextermínio?', type: 'radio', options: ['Sim', 'Não'] },
+        { id: 'depressao', label: 'Depressão?', type: 'radio', options: ['Sim', 'Não'] },
+        { id: 'responsavel', label: 'Responsável pelas informações', type: 'text' },
+      ]},
+    ]
+  },
+
+  f11: {
+    title: 'Questionário para Cadastro de PMs Interessados no PROVID',
+    num: 'F11',
+    hasSig: true,
+    sigLabels: ['Assinatura do(a) policial'],
+    fields: [
+      { section: 'Dados Pessoais', items: [
+        { id: 'nome', label: 'Nome completo', type: 'text' },
+        { id: 'nascimento', label: 'Data de nascimento', type: 'date' },
+        { id: 'sexo', label: 'Sexo', type: 'radio', options: ['Masculino', 'Feminino'] },
+        { id: 'posto', label: 'Posto/Graduação', type: 'text' },
+        { id: 'matricula', label: 'Matrícula', type: 'text' },
+        { id: 'tempo_servico', label: 'Tempo de efetivo serviço', type: 'text' },
+        { id: 'unidade', label: 'Unidade de origem', type: 'text' },
+        { id: 'escolaridade', label: 'Escolaridade', type: 'text' },
+        { id: 'formacao_superior', label: 'Formação superior (facultativo)', type: 'text' },
+        { id: 'endereco', label: 'Endereço residencial', type: 'text' },
+        { id: 'telefone', label: 'Telefone(s)', type: 'tel' },
+      ]},
+      { section: 'Experiência', items: [
+        { id: 'curso_vd', label: 'Possui curso de Prevenção à Violência Doméstica?', type: 'radio', options: ['Sim', 'Não'] },
+        { id: 'outras_form', label: 'Outra formação sobre VD (facultativo)', type: 'text' },
+        { id: 'ja_atuou', label: 'Já atuou no Serviço de Prevenção à VD?', type: 'radio', options: ['Sim', 'Não'] },
+        { id: 'dh', label: 'Formação em Direitos Humanos (facultativo)', type: 'text' },
+        { id: 'pc', label: 'Formação em Polícia Comunitária (facultativo)', type: 'text' },
+      ]},
+    ]
+  },
+
+  f15: {
+    title: 'Plano de Segurança Individualizado',
+    num: 'F15',
+    hasSig: false,
+    fields: [
+      { section: 'Qualificação da Vítima', items: [
+        { id: 'vitima_dados', label: 'Dados completos da vítima', type: 'textarea', placeholder: 'Nome, endereço, telefone, documentos, situação familiar...' },
+      ]},
+      { section: 'Qualificação do Autor', items: [
+        { id: 'autor_dados', label: 'Dados completos do autor', type: 'textarea', placeholder: 'Nome, endereço, telefone, documentos...' },
+      ]},
+      { section: 'Avaliação de Risco (FONAR)', items: [
+        { id: 'nivel_risco', label: 'Nível de Risco Identificado', type: 'radio', options: ['Baixo', 'Médio', 'Alto', 'Altíssimo'] },
+        { id: 'fatores_risco', label: 'Fatores de risco mais críticos', type: 'textarea', placeholder: 'Ex: ameaças de morte, posse de arma pelo agressor...' },
+        { id: 'fatores_protecao', label: 'Fatores de proteção existentes', type: 'textarea', placeholder: 'Ex: medida protetiva vigente, rede de apoio familiar...' },
+      ]},
+      { section: 'Ações Preventivas', items: [
+        { id: 'contatos_emergencia', label: 'Contatos de emergência', type: 'textarea', placeholder: 'Telefone da equipe PROVID, vizinho de confiança, familiar...' },
+        { id: 'palavra_chave', label: 'Palavra-chave/código de alerta', type: 'text', placeholder: 'Palavra discreta combinada com a vítima' },
+        { id: 'locais_seguros', label: 'Locais seguros / rota de fuga', type: 'textarea', placeholder: 'Casa de familiar, ponto de encontro...' },
+        { id: 'itens_essenciais', label: 'Itens essenciais para saída rápida', type: 'textarea', placeholder: 'Documentos, remédios, celular, dinheiro...' },
+      ]},
+    ]
+  },
+
+  f16: {
+    title: 'Documento Informativo do Ofensor',
+    num: 'F16',
+    hasSig: false,
+    fields: [
+      { section: 'Informações do Processo', items: [
+        { id: 'processo', label: 'Processo nº', type: 'text', placeholder: '__/202_ - __º BPM' },
+        { id: 'relatorio', label: 'Relatório Final nº', type: 'text' },
+        { id: 'vitima', label: 'Vítima', type: 'text' },
+        { id: 'dn', label: 'Data de nascimento da vítima', type: 'date' },
+      ]},
+      { section: 'Histórico de Antecedentes', items: [
+        { id: 'historico_occ', label: 'Ocorrências policiais anteriores', type: 'textarea', placeholder: 'Datas, tipos de crime, desfechos...' },
+        { id: 'reincidencia', label: 'Reincidência com a vítima atual', type: 'radio', options: ['Sim', 'Não', 'Desconhecido'] },
+        { id: 'reincidencia_det', label: 'Detalhar reincidências (se houver)', type: 'textarea' },
+        { id: 'mpu', label: 'Medidas protetivas anteriores ou atuais', type: 'textarea', placeholder: 'Tipo(s), nº de processo, órgão emissor, histórico de cumprimento...' },
+        { id: 'outros_contextos', label: 'Antecedentes em outros contextos', type: 'textarea', placeholder: 'Rua, trabalho, ex-parceiros...' },
+        { id: 'prisoes', label: 'Histórico de prisões/internações', type: 'textarea' },
+      ]},
+      { section: 'Fatores de Risco para a Vítima', items: [
+        { id: 'ameacas', label: 'Ameaças (tipo, frequência, gravidade)', type: 'textarea' },
+        { id: 'armas', label: 'Acesso ou posse de armas', type: 'text' },
+        { id: 'alcool_drogas', label: 'Consumo de álcool/drogas', type: 'text' },
+        { id: 'instabilidade', label: 'Instabilidade emocional/psicológica', type: 'textarea' },
+        { id: 'comportamento_obs', label: 'Comportamento obsessivo/controle', type: 'textarea' },
+        { id: 'desemprego', label: 'Desemprego/instabilidade financeira', type: 'text' },
+        { id: 'tentativa_hom', label: 'Tentativas de homicídio/lesão grave anterior', type: 'textarea' },
+        { id: 'desrespeito', label: 'Desrespeito a determinações legais', type: 'textarea' },
+      ]},
+    ]
+  },
+};
+
+// ══════════════════════════════════════════════════════
+// NAVEGAÇÃO
+// ══════════════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function goHome() {
+  currentForm = null;
+  formData = {};
+  signatureCanvases = {};
+  showScreen('home');
+}
+
+function openForm(id) {
+  currentForm = id;
+  formData = {};
+  signatureCanvases = {};
+  const form = FORMS[id];
+  document.getElementById('form-topbar-num').textContent = form.num;
+  document.getElementById('form-topbar-title').textContent = form.title;
+  renderForm(form);
+  showScreen('form');
+}
+
+// ══════════════════════════════════════════════════════
+// RENDERIZAÇÃO DO FORMULÁRIO
+// ══════════════════════════════════════════════════════
+function renderForm(form) {
+  const body = document.getElementById('form-body');
+  let html = '';
+
+  form.fields.forEach(section => {
+    html += `<div class="form-section">`;
+    html += `<div class="form-section-title">${section.section}</div>`;
+    section.items.forEach(item => {
+      html += renderField(item);
+    });
+    html += `</div>`;
+  });
+
+  // Assinaturas
+  if (form.hasSig) {
+    html += `<div class="form-section">`;
+    html += `<div class="form-section-title">Assinaturas</div>`;
+    form.sigLabels.forEach((label, i) => {
+      html += `
+        <div class="field-group">
+          <label class="field-label">${label}</label>
+          <div class="sig-container">
+            <canvas class="sig-canvas" id="sig-canvas-${i}" height="140"></canvas>
+            <div class="sig-hint" id="sig-hint-${i}">✍ Assinar aqui</div>
+            <button class="sig-clear" onclick="clearSig(${i})">Limpar</button>
+          </div>
+        </div>`;
+    });
+    html += `</div>`;
+  }
+
+  body.innerHTML = html;
+
+  // Init signatures
+  if (form.hasSig) {
+    form.sigLabels.forEach((_, i) => initSig(i));
+  }
+
+  // Init checks/radios
+  document.querySelectorAll('.check-item').forEach(item => {
+    item.addEventListener('click', function() {
+      const input = this.querySelector('input');
+      if (input.type === 'checkbox') {
+        input.checked = !input.checked;
+        this.classList.toggle('selected', input.checked);
+      }
+      updateFormData();
+    });
+  });
+  document.querySelectorAll('.radio-item').forEach(item => {
+    item.addEventListener('click', function() {
+      const name = this.querySelector('input').name;
+      document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+        r.closest('.radio-item').classList.remove('selected');
+        r.checked = false;
+      });
+      this.querySelector('input').checked = true;
+      this.classList.add('selected');
+      updateFormData();
+    });
+  });
+  document.querySelectorAll('.field-input, .field-textarea').forEach(el => {
+    el.addEventListener('input', updateFormData);
+  });
+}
+
+function renderField(item) {
+  if (item.type === 'text' || item.type === 'tel' || item.type === 'date') {
+    return `<div class="field-group">
+      <label class="field-label">${item.label}</label>
+      <input type="${item.type}" class="field-input" id="f-${item.id}" placeholder="${item.placeholder||''}" oninput="updateFormData()">
+    </div>`;
+  }
+  if (item.type === 'textarea') {
+    return `<div class="field-group">
+      <label class="field-label">${item.label}</label>
+      <textarea class="field-textarea field-input" id="f-${item.id}" placeholder="${item.placeholder||''}" rows="3" oninput="updateFormData()"></textarea>
+    </div>`;
+  }
+  if (item.type === 'multicheck') {
+    const checks = item.options.map(opt =>
+      `<label class="check-item">
+        <input type="checkbox" name="${item.id}" value="${opt}">
+        <span class="check-box"></span>
+        <span class="check-label">${opt}</span>
+      </label>`
+    ).join('');
+    return `<div class="field-group">
+      <label class="field-label">${item.label}</label>
+      <div class="check-group">${checks}</div>
+    </div>`;
+  }
+  if (item.type === 'radio') {
+    const radios = item.options.map(opt =>
+      `<label class="radio-item">
+        <input type="radio" name="${item.id}" value="${opt}">
+        ${opt}
+      </label>`
+    ).join('');
+    return `<div class="field-group">
+      <label class="field-label">${item.label}</label>
+      <div class="radio-group">${radios}</div>
+    </div>`;
+  }
+  return '';
+}
+
+function updateFormData() {
+  const form = FORMS[currentForm];
+  form.fields.forEach(section => {
+    section.items.forEach(item => {
+      if (item.type === 'text' || item.type === 'tel' || item.type === 'date' || item.type === 'textarea') {
+        const el = document.getElementById('f-' + item.id);
+        if (el) formData[item.id] = el.value;
+      }
+      if (item.type === 'radio') {
+        const checked = document.querySelector(`input[name="${item.id}"]:checked`);
+        formData[item.id] = checked ? checked.value : '';
+      }
+      if (item.type === 'multicheck') {
+        const checked = Array.from(document.querySelectorAll(`input[name="${item.id}"]:checked`)).map(c => c.value);
+        formData[item.id] = checked;
+      }
+    });
+  });
+}
+
+// ══════════════════════════════════════════════════════
+// ASSINATURA
+// ══════════════════════════════════════════════════════
+function initSig(idx) {
+  const canvas = document.getElementById('sig-canvas-' + idx);
+  if (!canvas) return;
+  canvas.width = canvas.offsetWidth;
+  const ctx = canvas.getContext('2d');
+  signatureCanvases[idx] = { canvas, ctx, drawing: false, hasData: false };
+
+  function getPos(e) {
+    const r = canvas.getBoundingClientRect();
+    const t = e.touches ? e.touches[0] : e;
+    return { x: (t.clientX - r.left) * (canvas.width / r.width), y: (t.clientY - r.top) * (canvas.height / r.height) };
+  }
+  function start(e) {
+    e.preventDefault();
+    const sc = signatureCanvases[idx];
+    sc.drawing = true;
+    const p = getPos(e);
+    ctx.beginPath(); ctx.moveTo(p.x, p.y);
+    document.getElementById('sig-hint-' + idx).classList.add('hidden');
+  }
+  function move(e) {
+    e.preventDefault();
+    const sc = signatureCanvases[idx];
+    if (!sc.drawing) return;
+    const p = getPos(e);
+    ctx.lineTo(p.x, p.y);
+    ctx.strokeStyle = '#1a2744'; ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.stroke();
+    sc.hasData = true;
+  }
+  function stop(e) { signatureCanvases[idx].drawing = false; }
+
+  canvas.addEventListener('touchstart', start, { passive: false });
+  canvas.addEventListener('touchmove', move, { passive: false });
+  canvas.addEventListener('touchend', stop);
+  canvas.addEventListener('mousedown', start);
+  canvas.addEventListener('mousemove', move);
+  canvas.addEventListener('mouseup', stop);
+}
+
+function clearSig(idx) {
+  const sc = signatureCanvases[idx];
+  if (!sc) return;
+  sc.ctx.clearRect(0, 0, sc.canvas.width, sc.canvas.height);
+  sc.hasData = false;
+  document.getElementById('sig-hint-' + idx).classList.remove('hidden');
+}
+
+// ══════════════════════════════════════════════════════
+// GERAR PDF (pré-visualização)
+// ══════════════════════════════════════════════════════
+function generatePDF() {
+  updateFormData();
+  const form = FORMS[currentForm];
+  document.getElementById('pdf-doc-title').textContent = form.title;
+  document.getElementById('pdf-title').textContent = form.title;
+
+  let html = '';
+  form.fields.forEach(section => {
+    html += `<div style="margin-bottom:16px"><div style="font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#1a2744;border-bottom:1px solid #e5e7eb;padding-bottom:6px;margin-bottom:10px">${section.section}</div>`;
+    section.items.forEach(item => {
+      const val = formData[item.id];
+      if (item.type === 'multicheck') {
+        const selected = Array.isArray(val) ? val : [];
+        html += `<div class="pdf-field">
+          <div class="pdf-field-label">${item.label}</div>
+          <div class="pdf-check-list">${selected.length ? selected.map(s => `<div class="pdf-check-item">☑ ${s}</div>`).join('') : '<div style="color:#9ca3af;font-size:13px">Nenhum selecionado</div>'}</div>
+        </div>`;
+      } else if (item.type === 'radio') {
+        html += `<div class="pdf-field">
+          <div class="pdf-field-label">${item.label}</div>
+          <div class="pdf-field-value">${val || '—'}</div>
+        </div>`;
+      } else {
+        html += `<div class="pdf-field">
+          <div class="pdf-field-label">${item.label}</div>
+          <div class="pdf-field-value">${val || '—'}</div>
+        </div>`;
+      }
+    });
+    html += `</div>`;
+  });
+
+  // Assinaturas
+  if (form.hasSig) {
+    html += `<div style="margin-top:20px;border-top:1px solid #e5e7eb;padding-top:16px">
+      <div style="font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#1a2744;margin-bottom:12px">Assinaturas</div>`;
+    form.sigLabels.forEach((label, i) => {
+      const sc = signatureCanvases[i];
+      const img = sc && sc.hasData ? `<img class="pdf-sig-img" src="${sc.canvas.toDataURL()}" style="max-width:220px;display:block;margin-bottom:4px">` : `<div style="height:60px;border-bottom:1px solid #1a1a1a;margin-bottom:4px;width:220px"></div>`;
+      html += `<div class="pdf-field">
+        <div class="pdf-field-label">${label}</div>
+        ${img}
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  // Data/hora de geração
+  const now = new Date().toLocaleString('pt-BR');
+  html += `<div style="margin-top:20px;font-size:10px;color:#9ca3af;text-align:center">Documento gerado em ${now} · PROVID PMDF</div>`;
+
+  document.getElementById('pdf-content').innerHTML = html;
+  showScreen('pdf');
+}
+
+// ══════════════════════════════════════════════════════
+// DOWNLOAD PDF REAL
+// ══════════════════════════════════════════════════════
+async function downloadPDF() {
+  const { jsPDF } = window.jspdf;
+  const form = FORMS[currentForm];
+  const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+  const W = 210; const margin = 18; const maxW = W - margin * 2;
+
+  let y = 20;
+  const lineH = 6;
+
+  // Header
+  doc.setFontSize(8); doc.setTextColor(80);
+  doc.text('Governo do Distrito Federal · Polícia Militar do Distrito Federal', W/2, y, {align:'center'}); y+=5;
+  doc.text('Centro de Políticas de Segurança Pública · PROVID', W/2, y, {align:'center'}); y+=8;
+
+  doc.setDrawColor(26,39,68); doc.setLineWidth(0.6);
+  doc.line(margin, y, W-margin, y); y+=6;
+
+  doc.setFontSize(13); doc.setTextColor(26,39,68); doc.setFont(undefined,'bold');
+  const titleLines = doc.splitTextToSize(form.title.toUpperCase(), maxW);
+  doc.text(titleLines, W/2, y, {align:'center'}); y += titleLines.length * 7 + 4;
+
+  doc.setLineWidth(0.3); doc.line(margin, y, W-margin, y); y+=8;
+
+  // Fields
+  form.fields.forEach(section => {
+    if (y > 265) { doc.addPage(); y = 20; }
+    doc.setFontSize(9); doc.setFont(undefined,'bold'); doc.setTextColor(26,39,68);
+    doc.text(section.section.toUpperCase(), margin, y); y+=2;
+    doc.setLineWidth(0.3); doc.line(margin, y, W-margin, y); y+=5;
+
+    section.items.forEach(item => {
+      const val = formData[item.id];
+      doc.setFontSize(8); doc.setFont(undefined,'bold'); doc.setTextColor(100);
+      doc.text(item.label, margin, y); y+=4;
+
+      doc.setFont(undefined,'normal'); doc.setTextColor(30);
+      let displayVal = '';
+      if (item.type === 'multicheck') {
+        displayVal = Array.isArray(val) && val.length ? val.join(' · ') : '—';
+      } else if (item.type === 'radio') {
+        displayVal = val || '—';
+      } else {
+        displayVal = val || '—';
+      }
+      const lines = doc.splitTextToSize(displayVal, maxW);
+      if (y + lines.length * lineH > 270) { doc.addPage(); y = 20; }
+      doc.text(lines, margin, y); y += lines.length * lineH + 3;
+      doc.setDrawColor(220); doc.setLineWidth(0.2);
+      doc.line(margin, y, W-margin, y); y+=4;
+    });
+    y += 4;
+  });
+
+  // Assinaturas
+  if (form.hasSig) {
+    if (y > 230) { doc.addPage(); y = 20; }
+    doc.setFontSize(9); doc.setFont(undefined,'bold'); doc.setTextColor(26,39,68);
+    doc.text('ASSINATURAS', margin, y); y+=2;
+    doc.setLineWidth(0.3); doc.line(margin, y, W-margin, y); y+=8;
+
+    form.sigLabels.forEach((label, i) => {
+      const sc = signatureCanvases[i];
+      doc.setFontSize(8); doc.setFont(undefined,'bold'); doc.setTextColor(100);
+      doc.text(label, margin, y); y+=4;
+      if (sc && sc.hasData) {
+        const imgData = sc.canvas.toDataURL('image/png');
+        doc.addImage(imgData, 'PNG', margin, y, 70, 25);
+        y += 28;
+      } else {
+        doc.setLineWidth(0.3); doc.setDrawColor(30);
+        doc.line(margin, y+18, margin+80, y+18); y+=22;
+      }
+      y += 4;
+    });
+  }
+
+  // Footer
+  const now = new Date().toLocaleString('pt-BR');
+  doc.setFontSize(7); doc.setTextColor(150); doc.setFont(undefined,'normal');
+  doc.text(`Documento gerado em ${now} via PROVID PMDF`, W/2, 285, {align:'center'});
+
+  const fname = `PROVID_${form.num}_${(formData.nome||formData.vitima_nome||'sem-nome').replace(/\s+/g,'_')}_${Date.now()}.pdf`;
+  doc.save(fname);
+  showToast('PDF salvo com sucesso!');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
