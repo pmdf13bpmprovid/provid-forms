@@ -966,9 +966,13 @@ function renderForm(form) {
 
   body.innerHTML = html;
 
-  // Init signatures
+  // Init signatures — aguarda o browser renderizar o canvas antes de medir
   if (form.hasSig) {
-    form.sigLabels.forEach((_, i) => initSig(i));
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        form.sigLabels.forEach((_, i) => initSig(i));
+      }, 50);
+    });
   }
 
   // Init checks/radios
@@ -1066,42 +1070,52 @@ function updateFormData() {
 function initSig(idx) {
   const canvas = document.getElementById('sig-canvas-' + idx);
   if (!canvas) return;
-  canvas.width = canvas.offsetWidth;
+
+  const rect = canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width  = rect.width  * dpr;
+  canvas.height = rect.height * dpr;
+
   const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
   signatureCanvases[idx] = { canvas, ctx, drawing: false, hasData: false };
 
   function getPos(e) {
     const r = canvas.getBoundingClientRect();
     const t = e.touches ? e.touches[0] : e;
-    return { x: (t.clientX - r.left) * (canvas.width / r.width), y: (t.clientY - r.top) * (canvas.height / r.height) };
+    return { x: t.clientX - r.left, y: t.clientY - r.top };
   }
   function start(e) {
     e.preventDefault();
-    const sc = signatureCanvases[idx];
-    sc.drawing = true;
+    signatureCanvases[idx].drawing = true;
     const p = getPos(e);
-    ctx.beginPath(); ctx.moveTo(p.x, p.y);
-    document.getElementById('sig-hint-' + idx).classList.add('hidden');
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+    const hint = document.getElementById('sig-hint-' + idx);
+    if (hint) hint.classList.add('hidden');
   }
   function move(e) {
     e.preventDefault();
-    const sc = signatureCanvases[idx];
-    if (!sc.drawing) return;
+    if (!signatureCanvases[idx].drawing) return;
     const p = getPos(e);
     ctx.lineTo(p.x, p.y);
-    ctx.strokeStyle = '#1a2744'; ctx.lineWidth = 2.5;
-    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.strokeStyle = '#1a2744';
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
     ctx.stroke();
-    sc.hasData = true;
+    signatureCanvases[idx].hasData = true;
   }
-  function stop(e) { signatureCanvases[idx].drawing = false; }
+  function stop() { signatureCanvases[idx].drawing = false; }
 
   canvas.addEventListener('touchstart', start, { passive: false });
-  canvas.addEventListener('touchmove', move, { passive: false });
-  canvas.addEventListener('touchend', stop);
-  canvas.addEventListener('mousedown', start);
-  canvas.addEventListener('mousemove', move);
-  canvas.addEventListener('mouseup', stop);
+  canvas.addEventListener('touchmove',  move,  { passive: false });
+  canvas.addEventListener('touchend',   stop);
+  canvas.addEventListener('touchcancel',stop);
+  canvas.addEventListener('mousedown',  start);
+  canvas.addEventListener('mousemove',  move);
+  canvas.addEventListener('mouseup',    stop);
+  canvas.addEventListener('mouseleave', stop);
 }
 
 function clearSig(idx) {
