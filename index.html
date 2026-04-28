@@ -358,6 +358,27 @@ body {
 .pdf-check-list { display: flex; flex-direction: column; gap: 3px; }
 .pdf-check-item { font-size: 13px; color: #374151; }
 
+/* Texto legal */
+.legal-block {
+  background: #f8f7f2;
+  border-left: 3px solid var(--gold);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 14px 16px;
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: #374151;
+  margin-bottom: 14px;
+}
+.legal-block strong { color: #1a1a1a; }
+.legal-block .legal-fill {
+  background: #fff3cd;
+  border-bottom: 1.5px solid #c8a84b;
+  padding: 0 4px;
+  border-radius: 2px;
+  font-style: italic;
+  color: #374151;
+}
+
 /* Toast */
 .toast {
   position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
@@ -564,6 +585,14 @@ const FORMS = {
     num: 'F2',
     hasSig: true,
     sigLabels: ['Assinatura da vítima', 'Policial Militar Referência'],
+    legalText: `Local: <strong>{local}</strong>, aos <strong>{data}</strong>.<br><br>
+Eu, Sra. <strong>{nome}</strong>, portadora do RG nº <strong>{rg}</strong> e CPF nº <strong>{cpf}</strong>, Nome da mãe: <strong>{mae}</strong>; Naturalidade: <strong>{naturalidade}</strong>; Estado civil: <strong>{estado_civil}</strong>; gênero com o qual me identifico: <strong>{genero}</strong>; cor: <strong>{cor}</strong>; Endereço: <strong>{endereco}</strong>; telefone: <strong>{telefone}</strong>.<br><br>
+Vulnerabilidades adicionais: <strong>{vulnerabilidades}</strong>.<br><br>
+<strong>Declaro</strong> estar ciente de que fui inserida no programa PROVID – Policiamento de Prevenção Orientada à Violência Doméstica, desenvolvido pela Polícia Militar.<br><br>
+A Polícia Militar reafirma seu compromisso com a prevenção e o enfrentamento à violência doméstica e familiar contra a mulher. Ressaltamos que <strong>violência doméstica é crime</strong>, e medidas rigorosas serão adotadas contra os autores dessas práticas.<br><br>
+Considerando a gravidade da situação e os registros de boletins de ocorrência que indicam seu envolvimento em episódios de violência doméstica, esta inserção tem como objetivo romper o ciclo da violência, promover sua segurança e impedir novas agressões.<br><br>
+A inclusão no PROVID está amparada pela Lei nº 11.340/2006 – <strong>Lei Maria da Penha</strong>, que estabelece mecanismos para coibir e prevenir a violência doméstica e familiar contra a mulher.<br><br>
+A senhora será acompanhada por equipe especializada da Polícia Militar, que atuará de forma preventiva, orientativa e protetiva.`,
     fields: [
       { section: 'Dados da Visita', items: [
         { id: 'local', label: 'Local', type: 'text', placeholder: 'Cidade, RA' },
@@ -597,6 +626,12 @@ const FORMS = {
     num: 'F3',
     hasSig: true,
     sigLabels: ['Assinatura da vítima', 'Comandante da Equipe PROVID'],
+    legalText: `Eu, <strong>{nome}</strong>, portadora do RG nº <strong>{rg}</strong> e CPF nº <strong>{cpf}</strong>,<br><br>
+Declaro que, após o registro do Relatório de Atividade Policial (RAP) ou Boletim de Ocorrência nº <strong>{rap}</strong>, fui contatada pela equipe do Policiamento de Prevenção Orientado à Violência Doméstica – PROVID, iniciativa da Polícia Militar voltada à prevenção e enfrentamento da violência doméstica contra a mulher.<br><br>
+Fui devidamente informada sobre os objetivos do programa, que incluem o acompanhamento da vítima, a oferta de assistência e o encaminhamento aos órgãos da Rede de Enfrentamento à Violência contra a Mulher. Apesar disso, <strong>declaro que não desejo ser incluída no referido policiamento e recuso formalmente o acompanhamento oferecido pelo PROVID.</strong><br><br>
+Declaro ainda que, mesmo diante da recusa, recebi todas as orientações necessárias quanto aos serviços disponíveis para apoio à mulher em situação de violência, incluindo os órgãos que podem ser acionados conforme a necessidade. Fui informada sobre a importância do PROVID para a manutenção das medidas protetivas de urgência previstas na Lei nº 11.340/2006 – <strong>Lei Maria da Penha</strong>, bem como sobre os procedimentos que podem ser adotados em caso de agravamento da situação.<br><br>
+Estou ciente de que posso solicitar o acompanhamento do PROVID a qualquer momento, caso deseje.<br><br>
+<strong>{local}</strong>`,
     fields: [
       { section: 'Identificação', items: [
         { id: 'local', label: 'Local e data', type: 'text', placeholder: 'Local, dia/mês/ano' },
@@ -619,6 +654,10 @@ const FORMS = {
     num: 'F5',
     hasSig: true,
     sigLabels: ['Assinatura da vítima (autorizante)', 'Comandante da Equipe PROVID'],
+    legalText: `Eu, <strong>{nome}</strong>, filho(a) de <strong>{pai}</strong> e <strong>{mae}</strong>, nascido(a) em <strong>{nascimento}</strong>, portador(a) do RG nº <strong>{rg}</strong> e CPF nº <strong>{cpf}</strong>, residente na <strong>{endereco}</strong>, nº <strong>{numero}</strong>, Complemento <strong>{complemento}</strong>, Bairro <strong>{bairro}</strong>, cidade <strong>{cidade}</strong>/DF,<br><br>
+<strong>autorizo</strong>, de livre e espontânea vontade, a equipe do PROVID, comandada pelo(a) <strong>{cmdt}</strong>, de prefixo nº <strong>{prefixo}</strong>, lotada no <strong>{unidade}</strong>, a realizar acompanhamento solidário contínuo, enquanto perdurarem os fatores de risco que justificam tal medida.<br><br>
+Esta autorização tem como finalidade garantir a atuação permanente da equipe do PROVID no acompanhamento, contribuindo para a minha segurança, bem-estar e o fiel cumprimento das determinações judiciais, caso existam.<br><br>
+Por ser expressão da verdade e refletir minha vontade, firmo o presente termo.`,
     fields: [
       { section: 'Dados da Autorizante', items: [
         { id: 'nome', label: 'Nome completo', type: 'text' },
@@ -650,6 +689,14 @@ const FORMS = {
     num: 'F7',
     hasSig: true,
     sigLabels: ['Assinatura do(a) notificado(a)', 'Nome completo e RG do notificado(a)'],
+    legalText: `Local: <strong>{local}</strong>, <strong>{data}</strong>.<br><br>
+Sr.(a): <strong>{nome_autor}</strong> — RG: <strong>{rg_autor}</strong> &nbsp; CPF: <strong>{cpf_autor}</strong><br><br>
+A Polícia Militar do Distrito Federal, no exercício de suas atribuições legais e constitucionais, atua na prevenção e repressão à violência doméstica e familiar, conforme previsto na Lei nº 11.340/2006 – Lei Maria da Penha.<br><br>
+A violência doméstica é crime e enseja medidas legais e administrativas rigorosas. Diante da gravidade e recorrência dos casos registrados, foi instituído o programa de Policiamento de Prevenção Orientada à Violência Doméstica – PROVID, com o objetivo de interromper o ciclo da violência, proteger as vítimas e promover ações de conscientização e responsabilização.<br><br>
+Após análise dos registros da Corporação, consta o seu envolvimento em <strong>{num_bos}</strong> boletim(ns) de ocorrência relacionados à prática de violência doméstica e familiar.<br><br>
+Dessa forma, comunicamos que o(a) senhor(a) foi incluído(a) no programa PROVID, estando sujeito(a) a acompanhamento preventivo por equipe especializada, que poderá realizar visitas, orientações e fiscalizações, conforme previsto em lei e nos protocolos institucionais.<br><br>
+A presente notificação tem caráter formal e preventivo, visando à promoção da paz no ambiente familiar e ao cumprimento das determinações legais.<br><br>
+<strong>Declaro que recebi uma cópia desta notificação.</strong>`,
     fields: [
       { section: 'Dados da Notificação', items: [
         { id: 'local', label: 'Local', type: 'text' },
@@ -672,6 +719,8 @@ const FORMS = {
     num: 'F9',
     hasSig: true,
     sigLabels: ['Assinatura da vítima', 'Comandante da Equipe PROVID'],
+    legalText: `Eu, <strong>{nome}</strong>, portadora do RG nº <strong>{rg}</strong>, CPF <strong>{cpf}</strong>, declaro que após o RAP ou Boletim de Ocorrência nº <strong>{rap}</strong>, fui procurada pelo policiamento de Prevenção Orientado à Violência Doméstica e Familiar (Provid), que me apresentou o referido Serviço fornecido pela Polícia Militar, que tem o objetivo a prevenção da violência doméstica praticada contra a mulher, bem como ofereceu e executou a assistência e o acompanhamento conforme o Protocolo de Prevenção à Violência Doméstica, contudo não desejo mais ser acompanhada, tendo em vista que: <strong>{motivo}</strong>.<br><br>
+Declaro ainda que, mesmo após a solicitação de desligamento, fui devidamente orientada de que, além da Polícia Militar, há outros Órgãos de apoio à mulher que poderão ser acionados conforme o caso exigir e que fui exaustivamente orientada sobre a importância do Serviço para a interrupção do ciclo de violência doméstica e manutenção das medidas protetivas de urgência, previstas na Lei 11.340/06 - Lei Maria da Penha, quando existentes, além de receber orientações acerca das providências a serem tomadas, caso seja necessário.`,
     fields: [
       { section: 'Identificação', items: [
         { id: 'nome', label: 'Nome completo da vítima', type: 'text' },
@@ -692,6 +741,8 @@ const FORMS = {
     num: 'F10',
     hasSig: true,
     sigLabels: ['Assinatura da vítima', 'Comandante da Equipe PROVID'],
+    legalText: `Eu, <strong>{nome}</strong>, portadora do RG nº <strong>{rg}</strong>, CPF <strong>{cpf}</strong>, declaro que após o RAP ou Boletim de Ocorrência nº <strong>{rap}</strong>, fui procurada pelo policiamento de Prevenção Orientado à Violência Doméstica e Familiar (Provid), que me apresentou o referido Serviço fornecido pela Polícia Militar, que tem o objetivo a prevenção da violência doméstica praticada contra a mulher, bem como ofereceu e executou a assistência e o acompanhamento conforme o Protocolo de Prevenção à Violência Doméstica, contudo não desejo mais ser acompanhada, tendo em vista que: <strong>{motivo}</strong>.<br><br>
+Declaro ainda que, mesmo após a solicitação de desligamento, fui devidamente orientada de que, além da Polícia Militar, há outros Órgãos de apoio à mulher que poderão ser acionados conforme o caso exigir e que fui exaustivamente orientada sobre a importância do Serviço para a interrupção do ciclo de violência doméstica e manutenção das medidas protetivas de urgência, previstas na Lei 11.340/06 - Lei Maria da Penha, quando existentes, além de receber orientações acerca das providências a serem tomadas, caso seja necessário.`,
     fields: [
       { section: 'Identificação', items: [
         { id: 'nome', label: 'Nome completo da vítima', type: 'text' },
@@ -937,6 +988,14 @@ function renderForm(form) {
   const body = document.getElementById('form-body');
   let html = '';
 
+  // Texto legal no topo (se houver)
+  if (form.legalText) {
+    html += `<div class="form-section">
+      <div class="form-section-title">Texto do Documento</div>
+      <div class="legal-block" id="legal-preview"></div>
+    </div>`;
+  }
+
   form.fields.forEach(section => {
     html += `<div class="form-section">`;
     html += `<div class="form-section-title">${section.section}</div>`;
@@ -1062,6 +1121,23 @@ function updateFormData() {
       }
     });
   });
+  // Atualizar prévia do texto legal
+  const legalEl = document.getElementById('legal-preview');
+  if (legalEl && form.legalText) {
+    legalEl.innerHTML = buildLegalText(form, formData);
+  }
+}
+
+function buildLegalText(form, data) {
+  if (!form.legalText) return '';
+  let t = form.legalText;
+  // substituir placeholders {campo} pelos valores preenchidos
+  t = t.replace(/\{([^}]+)\}/g, (_, key) => {
+    const val = data[key];
+    const display = (val && (Array.isArray(val) ? val.join(', ') : val)) || '_______________';
+    return `<span class="legal-fill">${display}</span>`;
+  });
+  return t;
 }
 
 // ══════════════════════════════════════════════════════
@@ -1136,6 +1212,12 @@ function generatePDF() {
   document.getElementById('pdf-title').textContent = form.title;
 
   let html = '';
+  // Texto legal no preview do PDF
+  if (form.legalText) {
+    html += `<div style="background:#f8f7f2;border-left:3px solid #c8a84b;padding:12px 14px;margin-bottom:16px;font-size:13px;line-height:1.7;color:#374151">
+      ${buildLegalText(form, formData)}
+    </div>`;
+  }
   form.fields.forEach(section => {
     html += `<div style="margin-bottom:16px"><div style="font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#1a2744;border-bottom:1px solid #e5e7eb;padding-bottom:6px;margin-bottom:10px">${section.section}</div>`;
     section.items.forEach(item => {
@@ -1209,6 +1291,24 @@ async function downloadPDF() {
   doc.text(titleLines, W/2, y, {align:'center'}); y += titleLines.length * 7 + 4;
 
   doc.setLineWidth(0.3); doc.line(margin, y, W-margin, y); y+=8;
+
+  // Texto legal
+  if (form.legalText) {
+    // Converter HTML do legalText para texto puro para o PDF
+    const tmpDiv = document.createElement('div');
+    tmpDiv.innerHTML = buildLegalText(form, formData);
+    const plainText = tmpDiv.innerText || tmpDiv.textContent || '';
+    doc.setFontSize(10); doc.setFont(undefined,'normal'); doc.setTextColor(40);
+    const legalLines = doc.splitTextToSize(plainText.trim(), maxW);
+    // Caixa de fundo levemente colorida
+    doc.setFillColor(248, 247, 242);
+    doc.setDrawColor(200, 168, 75); doc.setLineWidth(0.4);
+    const legalH = legalLines.length * 5.2 + 10;
+    if (y + legalH > 270) { doc.addPage(); y = 20; }
+    doc.rect(margin, y, maxW, legalH, 'FD');
+    doc.text(legalLines, margin + 4, y + 6);
+    y += legalH + 8;
+  }
 
   // Fields
   form.fields.forEach(section => {
